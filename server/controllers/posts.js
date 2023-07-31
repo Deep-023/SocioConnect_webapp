@@ -5,8 +5,8 @@ import User from "../models/User.js";
 export const createPost = async(req,res) => {
     try{
         const {userId, description, picturePath} = req.body;
-        const user = await User.findById(userID);
-        const newPost = newPost({
+        const user = await User.findById(userId);
+        const newPost = new Post({
             userId,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -21,6 +21,7 @@ export const createPost = async(req,res) => {
         const post = await Post.find();
         res.status(201).json(post);
     }catch(err){
+        console.log(err.message);
         res.status(409).json({message: err.message})
     }
 }

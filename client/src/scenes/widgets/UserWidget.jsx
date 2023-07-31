@@ -23,6 +23,7 @@ const UserWidget = ({ userId, picturePath }) => {
             headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();
+        console.log(data);
         setUser(data);
     };
 
@@ -52,7 +53,7 @@ const UserWidget = ({ userId, picturePath }) => {
                 pb="1.1rem"
                 onClick={() => navigate(`/profile/${userId}`)}
             >
-                <FlexBetween>
+                <FlexBetween gap="1rem">
                     <UserImage image={picturePath} />
                     <Box>
                         <Typography
