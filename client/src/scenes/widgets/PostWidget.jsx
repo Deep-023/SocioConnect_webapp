@@ -7,6 +7,7 @@ import WidgetWrapper from 'components/WidgetWrapper';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPost } from 'state';
+import moment from 'moment';
 
 const PostWidget = ({
     postId,
@@ -17,7 +18,9 @@ const PostWidget = ({
     picturePath,
     userPicturePath,
     likes,
-    comments
+    comments,
+    updatedAt,
+    createdAt
 }) => {
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
@@ -25,6 +28,38 @@ const PostWidget = ({
     const loggedInUserId = useSelector((state) => state.user._id);
     const isLiked = Boolean(likes[loggedInUserId]);
     const likeCount = Object.keys(likes).length;
+    const isUpdated = updatedAt===createdAt;
+    
+
+    /*Posted Ago cal*/
+    const currentMoment = moment();
+    const postedMoment = moment(updatedAt);
+
+    const timeDifference = currentMoment.diff(postedMoment, 'seconds');
+
+    const duration = moment.duration(timeDifference, 'seconds');
+    const yearsAgo = duration.years();
+    const monthsAgo = duration.months();
+    const daysAgo = duration.days();
+    const hoursAgo = duration.hours();
+    const minutesAgo = duration.minutes();
+    const secondsAgo = duration.seconds();
+
+    let formattedTime = '';
+    if (yearsAgo > 0) {
+        formattedTime = `${yearsAgo} years ago`;
+    } else if (monthsAgo > 0) {
+        formattedTime = `${monthsAgo} months ago`;
+    } else if (daysAgo > 0) {
+        formattedTime = `${daysAgo} days ago`;
+    } else if (hoursAgo > 0) {
+        formattedTime = `${hoursAgo} hours ago`;
+    } else if (minutesAgo > 0) {
+        formattedTime = `${minutesAgo} minutes ago`;
+    } else {
+        formattedTime = `${secondsAgo} seconds ago`;
+    }
+
 
     const { palette } = useTheme();
     const main = palette.neutral.main;
@@ -82,9 +117,14 @@ const PostWidget = ({
                         <Typography>{comments.length}</Typography>
                     </FlexBetween>
                 </FlexBetween>
+                <FlexBetween>
+                <Typography variant='h6'>
+                    {isUpdated ? `Updated ${formattedTime}` : `Posted ${formattedTime}` } 
+                </Typography>
                 <IconButton>
                     <ShareOutlined />
                 </IconButton>
+                </FlexBetween>
             </FlexBetween>
             {isComment && (
                 <Box mt="0.5rem">

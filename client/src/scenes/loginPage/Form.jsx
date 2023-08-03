@@ -118,7 +118,7 @@ const Form = () => {
                 <form onSubmit={handleSubmit}>
                     <Box
                         display="grid"
-                        gap="30px"
+                        gap="10px"
                         gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                         sx={{
                             "& > div": { gridColumn: isNonMobileScreens ? undefined : "span 4" }, //this will override inner textfields on smaller screens 
@@ -200,6 +200,7 @@ const Form = () => {
                             error={Boolean(touched.email) && Boolean(errors.email)}
                             helperText={touched.email && errors.email}
                             sx={{ gridColumn: "span 4" }}
+                            autocomplete="on"
                         />
                         <TextField label="Password"
                             type='password'
@@ -219,7 +220,7 @@ const Form = () => {
                             fullWidth
                             type="submit"
                             sx={{
-                                m: "2rem 0",
+                                m: "1rem 0",
                                 p: "1rem",
                                 backgroundColor: palette.primary.main,
                                 color: palette.background.alt,
