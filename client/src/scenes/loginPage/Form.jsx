@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Box, Button, Typography, useMediaQuery, TextField, useTheme } from '@mui/material'
+import { Box, Button, Typography, useMediaQuery, TextField, useTheme, IconButton, InputAdornment } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Formik } from 'formik' //form lib
 import * as yup from "yup"; //validation lib
 import { useNavigate } from 'react-router-dom';
@@ -41,6 +42,7 @@ const initialValuesLogin = {
 
 
 const Form = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const [pageType, setPageType] = useState("login");
     const { palette } = useTheme();
     const dispatch = useDispatch();
@@ -203,7 +205,7 @@ const Form = () => {
                             autocomplete="on"
                         />
                         <TextField label="Password"
-                            type='password'
+                            type={showPassword ? 'text' : 'password'}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.password}
@@ -211,6 +213,15 @@ const Form = () => {
                             error={Boolean(touched.password) && Boolean(errors.password)}
                             helperText={touched.password && errors.password}
                             sx={{ gridColumn: "span 4" }}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </Box>
 
@@ -239,7 +250,7 @@ const Form = () => {
                                 color: palette.primary.main,
                                 "&:hover": {
                                     cursor: "pointer",
-                                    color: palette.primary.contrastText,
+                                    color: palette.primary.dark,
                                 }
                             }}
                         >

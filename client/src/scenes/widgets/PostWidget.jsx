@@ -33,7 +33,7 @@ const PostWidget = ({
 
     /*Posted Ago cal*/
     const currentMoment = moment();
-    const postedMoment = moment(updatedAt);
+    const postedMoment = moment(createdAt);
 
     const timeDifference = currentMoment.diff(postedMoment, 'seconds');
 
@@ -119,7 +119,7 @@ const PostWidget = ({
                 </FlexBetween>
                 <FlexBetween>
                 <Typography variant='h6'>
-                    {isUpdated ? `Updated ${formattedTime}` : `Posted ${formattedTime}` } 
+                    {!isUpdated ? `Updated ${formattedTime}` : `Posted ${formattedTime}` } 
                 </Typography>
                 <IconButton>
                     <ShareOutlined />
