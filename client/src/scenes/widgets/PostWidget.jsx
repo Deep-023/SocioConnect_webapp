@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPost } from 'state';
 import moment from 'moment';
 import CommentWid from './CommentWid';
+import { RWebShare } from "react-web-share";
 
 const PostWidget = ({
     postId,
@@ -31,11 +32,11 @@ const PostWidget = ({
     const isLiked = Boolean(likes[loggedInUserId]);
     const likeCount = Object.keys(likes).length;
     const commentCount = Object.keys(comments).length;
-    const isUpdated = updatedAt===createdAt;
+    const isUpdated = updatedAt === createdAt;
     const [userComment, setUserComment] = useState('');
     const commentValues = Object.values(comments);
     const [commentKeys, setCommentKeys] = useState(Object.keys(comments));
-    
+
 
     /*Posted Ago cal*/
     const currentMoment = moment();
@@ -72,7 +73,7 @@ const PostWidget = ({
     const primary = palette.primary.main;
 
 
-    const commentors = async() => {
+    const commentors = async () => {
         const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
             method: "GET",
             headers: {
@@ -84,9 +85,9 @@ const PostWidget = ({
         setCommentKeys(updatedPosts);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         commentors(); //eslint-disable-line react-hooks/exhaustive-deps 
-    },[]);
+    }, []);
 
 
     const patchLike = async () => {
@@ -133,7 +134,7 @@ const PostWidget = ({
                     height="auto"
                     alt="post"
                     style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-                    src={`http://localhost:3001/assets/${picturePath}`}
+                    src={picturePath}
                 />
             )}
             <FlexBetween mt="0.25rem">
@@ -149,56 +150,58 @@ const PostWidget = ({
                         <Typography>{likeCount}</Typography>
                     </FlexBetween>
                     <FlexBetween gap="0.3rem">
-                        <IconButton onClick={()=>setIsComment(!isComment)}>
-                            <ChatBubbleOutlineOutlined/>
+                        <IconButton onClick={() => setIsComment(!isComment)}>
+                            <ChatBubbleOutlineOutlined />
                         </IconButton>
                         <Typography>{commentCount}</Typography>
                     </FlexBetween>
                 </FlexBetween>
                 <FlexBetween>
-                <Typography variant='h6'>
-                    {!isUpdated ? `Updated ${formattedTime}` : `Posted ${formattedTime}` } 
-                </Typography>
-                <IconButton>
-                    <ShareOutlined />
-                </IconButton>
+                    <Typography variant='h6'>
+                        {!isUpdated ? `Updated ${formattedTime}` : `Posted ${formattedTime}`}
+                    </Typography>
+                    <RWebShare
+                        data={{
+                            text: "Web Share - SocioConnect",
+                            url: `http://localhost:3000/profile/${postUserId}`,
+                            title: "Share Post",
+                        }}
+                        onClick={() => console.log("shared successfully!")}
+                    >
+                        <IconButton sx={{ml:"0.5rem"}}>
+                            <ShareOutlined />
+                        </IconButton>
+                    </RWebShare>
                 </FlexBetween>
             </FlexBetween>
             {isComment && (
                 <Box mt="0.5rem">
                     <FlexBetween mb={3}>
-                        <TextField 
+                        <TextField
                             label="Enter your comment"
                             multiline
                             variant="outlined"
                             value={userComment}
-                            onChange={(e)=>setUserComment(e.target.value)}
+                            onChange={(e) => setUserComment(e.target.value)}
                             fullWidth
                         />
                         <IconButton onClick={patchComment}>
-                            <DownloadDoneOutlinedIcon/>
+                            <DownloadDoneOutlinedIcon />
                         </IconButton>
                     </FlexBetween>
                     <Typography variant='h4' pl={2} pb={2}>
                         Comments
                     </Typography>
-                    {commentValues.map((comment,i) => (
+                    {commentValues.map((comment, i) => (
                         <Box key={`${name}-${i}`}>
-                        <CommentWid name={`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
-                            picturePath={commentKeys[i].picturePath} comment={comment}
-                        />
-                            {/*<Divider/>
-                            <Typography>
-                                {`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
-                            </Typography>
-                            <Typography sx={{color: main, m:"0.5rem 0", pl:"1rem"}}>
-                                {comment.charAt(0).toUpperCase() + comment.slice(1)}
-                            </Typography>*/}
+                            <CommentWid name={`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
+                                picturePath={commentKeys[i].picturePath} comment={comment}
+                            />
                         </Box>
                     ))}
-                    <Divider/>
+                    <Divider />
                 </Box>
-            )} 
+            )}
         </WidgetWrapper>
     );
 };

@@ -1,8 +1,7 @@
 import Post from "../models/Post.js"
 import User from "../models/User.js";
 
-/*CREATE*/
-export const createPost = async (req, res) => {
+/*export const createPost = async (req, res) => {
     try {
         const { userId, description, picturePath } = req.body;
         const user = await User.findById(userId);
@@ -24,7 +23,7 @@ export const createPost = async (req, res) => {
         console.log(err.message);
         res.status(409).json({ message: err.message })
     }
-}
+}*/
 
 
 /*READ*/
