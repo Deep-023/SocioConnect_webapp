@@ -34,9 +34,13 @@ const PostsWidget = ({ userId, isProfile = false }) => {
             getPosts();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    const sortedPosts = [...posts].sort((postA, postB) =>
+        new Date(postB.createdAt) - new Date(postA.createdAt)
+    );
+
     return (
         <>
-            {posts.map((
+            {sortedPosts.map((
                 {
                     _id,
                     userId,

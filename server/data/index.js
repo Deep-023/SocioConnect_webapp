@@ -158,11 +158,11 @@ export const posts = [
       [userIds[3], true],
       [userIds[4], true],
     ]),
-    comments: [
-      "random comment",
-      "another random comment",
-      "yet another random comment",
-    ],
+    comments: new Map([
+      [userIds[0],"random comment"],
+      [userIds[2],"another random comment"],
+      [userIds[3],"yet another random comment"],
+    ]),
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -180,12 +180,12 @@ export const posts = [
       [userIds[1], true],
       [userIds[2], true],
     ]),
-    comments: [
-      "one more random comment",
-      "and another random comment",
-      "no more random comments",
-      "I lied, one more random comment",
-    ],
+    comments: new Map([
+      [userIds[7],"one more random comment"],
+      [userIds[4],"and another random comment"],
+      [userIds[1],"no more random comments"],
+      [userIds[2],"I lied, one more random comment"],
+    ]),
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -203,13 +203,13 @@ export const posts = [
       [userIds[3], true],
       [userIds[5], true],
     ]),
-    comments: [
-      "one more random comment",
-      "I lied, one more random comment",
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "I'm bored",
-    ],
+    comments: new Map([
+      [userIds[1],"one more random comment"],
+      [userIds[6],"I lied, one more random comment"],
+      [userIds[3],"I lied again, one more random comment"],
+      [userIds[5],"Why am I doing this?"],
+      [userIds[2],"I'm bored"],
+    ]),
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -226,14 +226,11 @@ export const posts = [
       [userIds[6], true],
       [userIds[3], true],
     ]),
-    comments: [
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "I'm bored",
-      "I'm still bored",
-      "All I want to do is play video games",
-      "I'm going to play video games",
-    ],
+    comments: new Map([
+      [userIds[6],"I'm still bored"],
+      [userIds[1],"All I want to do is play video games"],
+      [userIds[3],"I'm going to play video games"],
+    ]),
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -251,13 +248,13 @@ export const posts = [
       [userIds[5], true],
       [userIds[7], true],
     ]),
-    comments: [
-      "I lied again, one more random comment",
-      "Why am I doing this?",
-      "Man I'm bored",
-      "What should I do?",
-      "I'm going to play video games",
-    ],
+    comments: new Map([
+      [userIds[1],"I lied again, one more random comment"],
+      [userIds[3],"Why am I doing this?"],
+      [userIds[5],"Man I'm bored"],
+      [userIds[7],"What should I do?"],
+      [userIds[2],"I'm going to play video games"],
+    ]),
   },
   {
     _id: new mongoose.Types.ObjectId(),
@@ -274,12 +271,9 @@ export const posts = [
       [userIds[2], true],
     ]),
 
-    comments: [
-      "Can I play video games now?",
-      "No let's actually study",
-      "Never mind, I'm going to play video games",
-      "Stop it.",
-      "Michael, stop it.",
-    ],
+    comments: new Map([
+      [userIds[1],"No let's actually study"],
+      [userIds[2],"Never mind, I'm going to play video games"],
+    ]),
   },
 ];

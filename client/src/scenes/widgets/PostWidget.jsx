@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChatBubbleOutline, ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined } from '@mui/icons-material';
-import { Box, Divider, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Divider, IconButton, Typography, useTheme, TextField } from '@mui/material';
+import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
 import FlexBetween from 'components/FlexBetween';
 import Friend from './Friend';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -8,6 +9,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPost } from 'state';
 import moment from 'moment';
+import CommentWid from './CommentWid';
 
 const PostWidget = ({
     postId,
@@ -28,7 +30,11 @@ const PostWidget = ({
     const loggedInUserId = useSelector((state) => state.user._id);
     const isLiked = Boolean(likes[loggedInUserId]);
     const likeCount = Object.keys(likes).length;
+    const commentCount = Object.keys(comments).length;
     const isUpdated = updatedAt===createdAt;
+    const [userComment, setUserComment] = useState('');
+    const commentValues = Object.values(comments);
+    const [commentKeys, setCommentKeys] = useState(Object.keys(comments));
     
 
     /*Posted Ago cal*/
@@ -65,6 +71,24 @@ const PostWidget = ({
     const main = palette.neutral.main;
     const primary = palette.primary.main;
 
+
+    const commentors = async() => {
+        const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+        });
+        const updatedPosts = await response.json();
+        setCommentKeys(updatedPosts);
+    }
+
+    useEffect(()=>{
+        commentors(); //eslint-disable-line react-hooks/exhaustive-deps 
+    },[]);
+
+
     const patchLike = async () => {
         const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
             method: "PATCH",
@@ -76,6 +100,20 @@ const PostWidget = ({
         });
         const updatedPosts = await response.json();
         dispatch(setPost({ post: updatedPosts }));
+    };
+
+    const patchComment = async () => {
+        const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId: loggedInUserId, comment: userComment })
+        });
+        const updatedPosts = await response.json();
+        dispatch(setPost({ post: updatedPosts }));
+        commentors()
     };
 
     return (
@@ -114,7 +152,7 @@ const PostWidget = ({
                         <IconButton onClick={()=>setIsComment(!isComment)}>
                             <ChatBubbleOutlineOutlined/>
                         </IconButton>
-                        <Typography>{comments.length}</Typography>
+                        <Typography>{commentCount}</Typography>
                     </FlexBetween>
                 </FlexBetween>
                 <FlexBetween>
@@ -128,12 +166,34 @@ const PostWidget = ({
             </FlexBetween>
             {isComment && (
                 <Box mt="0.5rem">
-                    {comments.map((comment,i) => (
+                    <FlexBetween mb={3}>
+                        <TextField 
+                            label="Enter your comment"
+                            multiline
+                            variant="outlined"
+                            value={userComment}
+                            onChange={(e)=>setUserComment(e.target.value)}
+                            fullWidth
+                        />
+                        <IconButton onClick={patchComment}>
+                            <DownloadDoneOutlinedIcon/>
+                        </IconButton>
+                    </FlexBetween>
+                    <Typography variant='h4' pl={2} pb={2}>
+                        Comments
+                    </Typography>
+                    {commentValues.map((comment,i) => (
                         <Box key={`${name}-${i}`}>
-                            <Divider/>
-                            <Typography sx={{color: main, m:"0.5rem 0", pl:"1rem"}}>
-                                {comment}
+                        <CommentWid name={`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
+                            picturePath={commentKeys[i].picturePath} comment={comment}
+                        />
+                            {/*<Divider/>
+                            <Typography>
+                                {`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
                             </Typography>
+                            <Typography sx={{color: main, m:"0.5rem 0", pl:"1rem"}}>
+                                {comment.charAt(0).toUpperCase() + comment.slice(1)}
+                            </Typography>*/}
                         </Box>
                     ))}
                     <Divider/>
