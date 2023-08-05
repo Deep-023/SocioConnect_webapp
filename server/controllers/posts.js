@@ -1,6 +1,14 @@
 import Post from "../models/Post.js"
 import User from "../models/User.js";
+import admin from 'firebase-admin';
+import serviceAccount from '../config/socioconnect-1acff-firebase-adminsdk-wnwlm-0a8f833b69.js'
 
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+    // Other configuration options if needed
+
+const storage = admin.storage();
 /*export const createPost = async (req, res) => {
     try {
         const { userId, description, picturePath } = req.body;
@@ -108,11 +116,24 @@ export const getCommentPosts = async (req, res) => {
 export const deletePost = async (req, res) => {
     try {
         const { id } = req.params;
+        const delpost = await Post.findById(id);
+        const url = delpost.picturePath;
+
         await Post.findByIdAndDelete(id);
+
+        const baseUrl = "https://firebasestorage.googleapis.com/v0/b/socioconnect-1acff.appspot.com/o/";
+        let imagePath = url.replace(baseUrl,"");
+        const indexOfEndPath = imagePath.indexOf("?");
+        imagePath = imagePath.substring(0,indexOfEndPath);
+        imagePath = imagePath.replace("%2F","/");
+        console.log(imagePath);
+        storage.bucket("socioconnect-1acff.appspot.com").file(imagePath).delete().catch((err) => console.error(err));
+
         const post = await Post.find();
         res.status(200).json(post);
 
     } catch (err) {
+        console.log(err.message)
         res.status(404).json({ message: err.message })
     }
 }

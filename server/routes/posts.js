@@ -41,7 +41,7 @@ router.post("/", verifyToken, upload.single("picture"), async (req, res) => {
             targetContentType = mimetype; // Set target content type to PNG
         }
 
-        const storageRef = ref(storage, `files/${originalname + " " + dateTime}`);
+        const storageRef = ref(storage, `files/${originalname + dateTime}`);
         const metadata = {
             contentType: targetContentType,
         };
