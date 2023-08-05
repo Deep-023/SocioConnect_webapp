@@ -116,8 +116,6 @@ const LoginPage = () => {
           </Typography>
           <Form />
         </Box>
-
-        <Typography variant='h1' >Hello</Typography>
       </Box>
 
     </Box>

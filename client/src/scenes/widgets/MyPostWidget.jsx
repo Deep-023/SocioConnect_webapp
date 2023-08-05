@@ -29,6 +29,9 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
+    setImage(null);
+    setPost("");
+    setIsImage(false);
 
     const response = await fetch(`http://localhost:3001/posts`, {
       method: "POST",
@@ -38,9 +41,6 @@ const MyPostWidget = ({ picturePath }) => {
 
     const posts = await response.json();
     dispatch(setPosts({ posts }));
-    setImage(null);
-    setPost("");
-    setIsImage(false);
   };
 
   return (
@@ -68,7 +68,7 @@ const MyPostWidget = ({ picturePath }) => {
           mt="1rem"
           p="1rem"
         >
-          <Dropzone acceptedFiles=".jpg,.jpeg,.png"
+          <Dropzone acceptedFiles=".jpg,.jpeg,.png,.HEIC"
             multiple={false}
             onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
           >
@@ -138,7 +138,7 @@ const MyPostWidget = ({ picturePath }) => {
         )}
 
         <Button
-          disabled={!post}
+          disabled={!post || !image}
           onClick={handlePost}
           sx={{
             color: palette.background.alt,

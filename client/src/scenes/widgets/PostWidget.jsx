@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ChatBubbleOutline, ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined } from '@mui/icons-material';
+import { DeleteOutline, ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined } from '@mui/icons-material';
 import { Box, Divider, IconButton, Typography, useTheme, TextField } from '@mui/material';
 import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
 import FlexBetween from 'components/FlexBetween';
@@ -7,7 +7,7 @@ import Friend from './Friend';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPost } from 'state';
+import { setPost, setPosts } from 'state';
 import moment from 'moment';
 import CommentWid from './CommentWid';
 import { RWebShare } from "react-web-share";
@@ -117,14 +117,32 @@ const PostWidget = ({
         commentors()
     };
 
+    const deletePost = async () => {
+        const response = await fetch(`http://localhost:3001/posts/${postId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await response.json();
+        dispatch(setPosts({posts: data}));
+    }
+
     return (
         <WidgetWrapper m="2rem 0">
-            <Friend
-                friendId={postUserId}
-                name={name}
-                subtitle={location}
-                userPicturePath={userPicturePath}
-            />
+            <FlexBetween>
+                <Friend
+                    friendId={postUserId}
+                    name={name}
+                    subtitle={location}
+                    userPicturePath={userPicturePath}
+                />
+                {loggedInUserId === postUserId &&
+                    <IconButton onClick={deletePost}>
+                        <DeleteOutline />
+                    </IconButton>}
+            </FlexBetween>
             <Typography color={main} sx={{ mt: "1rem" }}>
                 {description}
             </Typography>
@@ -168,7 +186,7 @@ const PostWidget = ({
                         }}
                         onClick={() => console.log("shared successfully!")}
                     >
-                        <IconButton sx={{ml:"0.5rem"}}>
+                        <IconButton sx={{ ml: "0.5rem" }}>
                             <ShareOutlined />
                         </IconButton>
                     </RWebShare>

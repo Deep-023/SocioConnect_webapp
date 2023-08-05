@@ -94,13 +94,25 @@ export const getCommentPosts = async (req, res) => {
         );
 
         const formattedCommentors = commentors.map(
-            ({firstName, lastName, picturePath }) => {
-                return {firstName, lastName, picturePath }
+            ({ firstName, lastName, picturePath }) => {
+                return { firstName, lastName, picturePath }
             });
         res.status(200).json(formattedCommentors);
 
     } catch (err) {
         console.log(err.message);
+        res.status(404).json({ message: err.message })
+    }
+}
+
+export const deletePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Post.findByIdAndDelete(id);
+        const post = await Post.find();
+        res.status(200).json(post);
+
+    } catch (err) {
         res.status(404).json({ message: err.message })
     }
 }

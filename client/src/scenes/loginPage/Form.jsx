@@ -216,7 +216,7 @@ const Form = () => {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{mr:'0.1px'}}>
                                             {showPassword ? <VisibilityOff /> : <Visibility />}
                                         </IconButton>
                                     </InputAdornment>

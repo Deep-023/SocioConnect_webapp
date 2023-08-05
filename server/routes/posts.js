@@ -1,9 +1,10 @@
 import express from "express";
-import { commentPost, getFeedPosts, getUserPosts, likePost, getCommentPosts} from "../controllers/posts.js"
+import { commentPost, getFeedPosts, getUserPosts, likePost, getCommentPosts, deletePost } from "../controllers/posts.js"
 import { verifyToken } from "../middleware/auth.js";
-import {initializeApp} from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import multer from "multer";
+import heicConvert from 'heic-convert';
 import config from "../config/firebase.config.js"
 import User from "../models/User.js";
 import Post from "../models/Post.js";
@@ -21,13 +22,30 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 /*CREATE*/
 router.post("/", verifyToken, upload.single("picture"), async (req, res) => {
-    try{
+    try {
         const dateTime = Date.now();
-        const storageRef = ref(storage, `files/${req.file.originalname + " " + dateTime}`);
+        const { originalname, buffer, mimetype } = req.file;
+        let convertedBuffer = buffer;
+
+        let targetContentType = mimetype; // Default to original mimetype
+        console.log(mimetype);
+        if (mimetype === 'application/octet-stream') { //multer is detecting heic type as this
+            /* Convert HEIC to JPEG using heic-convert */
+            convertedBuffer = await heicConvert({
+                buffer: buffer,
+                format: 'JPEG', // Convert to JPEG
+            });
+            targetContentType = 'image/jpeg'; // Set target content type to JPEG
+        } else {
+            /* You can add logic here for PNG if needed */
+            targetContentType = mimetype; // Set target content type to PNG
+        }
+
+        const storageRef = ref(storage, `files/${originalname + " " + dateTime}`);
         const metadata = {
-            contentType: req.file.mimetype,
+            contentType: targetContentType,
         };
-        const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+        const snapshot = await uploadBytesResumable(storageRef, convertedBuffer, metadata);
         const downloadURL = await getDownloadURL(snapshot.ref);
 
         const { userId, description, picturePath } = req.body;
@@ -47,7 +65,7 @@ router.post("/", verifyToken, upload.single("picture"), async (req, res) => {
         const post = await Post.find();
         res.status(201).json(post);
     }
-    catch{
+    catch {
         console.log(err.message);
         res.status(409).json({ message: err.message })
     }
@@ -56,11 +74,13 @@ router.post("/", verifyToken, upload.single("picture"), async (req, res) => {
 
 /*Read*/
 router.get("/", verifyToken, getFeedPosts);
-router.get("/:userId",verifyToken,getUserPosts);
-router.get("/:id/comment",verifyToken,getCommentPosts);
+router.get("/:userId", verifyToken, getUserPosts);
+router.get("/:id/comment", verifyToken, getCommentPosts);
 
 /*Update*/
-router.patch("/:id/like",verifyToken,likePost)
-router.patch("/:id/comment",verifyToken,commentPost)
+router.patch("/:id/like", verifyToken, likePost)
+router.patch("/:id/comment", verifyToken, commentPost)
 
+/*Delete Post*/
+router.delete("/:id",verifyToken,deletePost)
 export default router;

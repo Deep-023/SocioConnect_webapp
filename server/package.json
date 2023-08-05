@@ -9,6 +9,7 @@
     "express": "^4.18.2",
     "firebase": "^10.1.0",
     "gridfs-stream": "^1.1.1",
+    "heic-convert": "^1.2.4",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
