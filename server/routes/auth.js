@@ -22,7 +22,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post("/register", upload.single("picture"), async (req, res) => {
     try{
         const dateTime = Date.now();
-        const storageRef = ref(storage, `files/${req.file.originalname + " " + dateTime}`);
+        const storageRef = ref(storage, `files/${req.file.originalname + dateTime}`);
         const metadata = {
             contentType: req.file.mimetype,
         };

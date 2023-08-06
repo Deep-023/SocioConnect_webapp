@@ -6,9 +6,19 @@ import serviceAccount from '../config/socioconnect-1acff-firebase-adminsdk-wnwlm
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
-    // Other configuration options if needed
+// Other configuration options if needed
 
 const storage = admin.storage();
+
+export const deleteFromFirebase = (url) => {
+    const baseUrl = "https://firebasestorage.googleapis.com/v0/b/socioconnect-1acff.appspot.com/o/";
+    let imagePath = url.replace(baseUrl, "");
+    const indexOfEndPath = imagePath.indexOf("?");
+    imagePath = imagePath.substring(0, indexOfEndPath);
+    imagePath = imagePath.replace("%2F", "/");
+    console.log(imagePath);
+    storage.bucket("socioconnect-1acff.appspot.com").file(imagePath).delete().catch((err) => console.error(err));
+}
 /*export const createPost = async (req, res) => {
     try {
         const { userId, description, picturePath } = req.body;
@@ -121,13 +131,7 @@ export const deletePost = async (req, res) => {
 
         await Post.findByIdAndDelete(id);
 
-        const baseUrl = "https://firebasestorage.googleapis.com/v0/b/socioconnect-1acff.appspot.com/o/";
-        let imagePath = url.replace(baseUrl,"");
-        const indexOfEndPath = imagePath.indexOf("?");
-        imagePath = imagePath.substring(0,indexOfEndPath);
-        imagePath = imagePath.replace("%2F","/");
-        console.log(imagePath);
-        storage.bucket("socioconnect-1acff.appspot.com").file(imagePath).delete().catch((err) => console.error(err));
+        deleteFromFirebase(url);
 
         const post = await Post.find();
         res.status(200).json(post);

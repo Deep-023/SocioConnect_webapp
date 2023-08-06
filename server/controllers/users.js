@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import { deleteFromFirebase } from "./posts.js";
+import Post from "../models/Post.js";
 
 /*Read*/
 export const getUser = async (req, res) => {
@@ -64,5 +66,32 @@ export const addRemoveFriend = async (req, res) => {
     } catch (err) {
         console.log(err.message)
         res.status(404).json({ message: err.message })
+    }
+}
+
+/*Delete User*/
+export const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        await User.updateMany(
+            { friends: id },
+            { $pull: { friends: id } }
+        );
+
+        const deletedPosts = await Post.find({ userId: id });
+        const deletePostsResult = await Post.deleteMany({ userId: id });
+        for (const post of deletedPosts) {
+            if (post.picturePath) {
+                // Delete the image from Firebase Storage
+                deleteFromFirebase(post.picturePath);
+            }
+        }
+        deleteFromFirebase(user.picturePath)
+        await User.findByIdAndDelete(id);
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (err) {
+        console.log(err.message)
+        res.status(404).json({ message: err.message });
     }
 }

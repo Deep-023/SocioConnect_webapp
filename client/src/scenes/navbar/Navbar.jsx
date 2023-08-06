@@ -12,6 +12,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const token = useSelector((state)=>state.token);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
   /*Colors that we will be using*/
@@ -22,6 +23,15 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.dark;
   const alt = theme.palette.background.alt;
   const fullName = `${user.firstName} ${user.lastName}`;
+
+  const handleDeleteUser = async () => {
+    const response = await fetch(`http://localhost:3001/users/${user._id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setLogout());
+    navigate("/login");
+  }
 
   return (
     <FlexBetween padding="1rem 6%" background={alt} >
@@ -83,6 +93,9 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>
                 Log Out
+              </MenuItem>
+              <MenuItem onClick={handleDeleteUser}>
+                Delete User
               </MenuItem>
             </Select>
           </FormControl>
@@ -147,6 +160,9 @@ const Navbar = () => {
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out
+                </MenuItem>
+                <MenuItem onClick={handleDeleteUser}>
+                  Delete User
                 </MenuItem>
               </Select>
             </FormControl>
