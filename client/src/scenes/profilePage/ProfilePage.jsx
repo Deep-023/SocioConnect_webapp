@@ -1,6 +1,6 @@
 import { Box, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { UseSelector, useSelector } from 'react-redux/es/hooks/useSelector';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
 import { useParams } from 'react-router-dom';
 import Navbar from 'scenes/navbar/Navbar';
 import FriendListWidget from 'scenes/widgets/FriendListWidget';
@@ -41,15 +41,15 @@ const ProfilePage = () => {
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
           <UserWidget userId={userId} picturePath={user.picturePath} />
-          <Box m="2rem 0"/>
-            <FriendListWidget userId={userId} />
+          <Box m="2rem 0" />
+          <FriendListWidget userId={userId} />
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
           <MyPostWidget picturePath={user.picturePath} />
-          <Box m="2rem 0"/>
+          <Box m="2rem 0" />
           <PostsWidget userId={userId} />
         </Box>
       </Box>

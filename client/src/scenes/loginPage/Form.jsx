@@ -140,7 +140,7 @@ const Form = () => {
                                 <TextField label="Last Name"
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    value={values.lastNameName}
+                                    value={values.lastName}
                                     name="lastName" //align with schema 
                                     error={Boolean(touched.lastName) && Boolean(errors.lastName)}
                                     helperText={touched.lastName && errors.lastName}

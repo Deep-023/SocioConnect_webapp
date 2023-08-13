@@ -1,6 +1,6 @@
 import React from 'react'
 import { WorkOutlineOutlined, ManageAccountsOutlined, EditOutlined, LocationCityOutlined, LocationOnOutlined } from '@mui/icons-material'
-import { Box, Typography, Divider, useTheme } from '@mui/material'
+import { Box, Typography, Divider, useTheme, IconButton } from '@mui/material'
 import UserImage from 'components/UserImage'
 import WidgetWrapper from 'components/WidgetWrapper'
 import FlexBetween from 'components/FlexBetween'
@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const UserWidget = ({ userId, picturePath }) => {
+    const { _id } = useSelector((state) => state.user);
     const [user, setUser] = useState(null);
     const { palette } = useTheme();
     const navigate = useNavigate();
@@ -50,18 +51,16 @@ const UserWidget = ({ userId, picturePath }) => {
             <FlexBetween
                 gap="0.5rem"
                 pb="1.1rem"
-                onClick={() => navigate(`/profile/${userId}`)}
             >
-                <FlexBetween gap="1rem">
+                <FlexBetween gap="1rem" onClick={() => navigate(`/profile/${userId}`)}>
                     <UserImage image={picturePath} />
                     <Box>
                         <Typography
                             variant="h4"
                             color={dark}
                             fontWeight="500"
-                            sc={{
+                            sx={{
                                 "&:hover": {
-                                    color: palette.primary.light,
                                     cursor: "pointer"
                                 }
                             }}>
@@ -70,7 +69,9 @@ const UserWidget = ({ userId, picturePath }) => {
                         <Typography color={medium}>{friends.length} friends</Typography>
                     </Box>
                 </FlexBetween>
-                <ManageAccountsOutlined />
+                {_id === userId && <IconButton onClick={() => navigate('/profile/edit')}>
+                    <ManageAccountsOutlined />
+                </IconButton>}
             </FlexBetween>
             <Divider />
 

@@ -69,6 +69,19 @@ export const addRemoveFriend = async (req, res) => {
     }
 }
 
+export const updateProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { firstName, lastName, location, occupation } = req.body;
+        const updatedUser = await User.findByIdAndUpdate(id, { firstName: firstName, lastName: lastName, location: location, occupation: occupation }, { new: true });
+        res.status(200).json(updatedUser);
+
+    } catch (err) {
+        console.log(err.message);
+        res.status(404).json({ message: err.message })
+    }
+}
+
 /*Delete User*/
 export const deleteUser = async (req, res) => {
     try {
@@ -95,3 +108,4 @@ export const deleteUser = async (req, res) => {
         res.status(404).json({ message: err.message });
     }
 }
+

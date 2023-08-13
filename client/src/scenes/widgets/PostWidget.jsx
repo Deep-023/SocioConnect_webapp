@@ -25,6 +25,7 @@ const PostWidget = ({
     updatedAt,
     createdAt
 }) => {
+    
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
     const [isComment, setIsComment] = useState(false);
@@ -36,6 +37,7 @@ const PostWidget = ({
     const [userComment, setUserComment] = useState('');
     const commentValues = Object.values(comments);
     const [commentKeys, setCommentKeys] = useState(Object.keys(comments));
+    
 
 
     /*Posted Ago cal*/
@@ -213,7 +215,7 @@ const PostWidget = ({
                     {commentValues.map((comment, i) => (
                         <Box key={`${name}-${i}`}>
                             <CommentWid name={`${commentKeys[i]?.firstName} ${commentKeys[i]?.lastName}`}
-                                picturePath={commentKeys[i].picturePath} comment={comment}
+                                picturePath={commentKeys[i]?.picturePath} comment={comment}
                             />
                         </Box>
                     ))}
