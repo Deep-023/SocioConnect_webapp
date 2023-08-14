@@ -7,10 +7,13 @@ import FlexBetween from 'components/FlexBetween'
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import EditIcon from '@mui/icons-material/Edit';
+import EditImage from 'components/EditImage'
 
 const UserWidget = ({ userId, picturePath }) => {
     const { _id } = useSelector((state) => state.user);
     const [user, setUser] = useState(null);
+    const [profileImage, setProfileImage] = useState(false);
     const { palette } = useTheme();
     const navigate = useNavigate();
     const token = useSelector((state) => state.token);
@@ -52,9 +55,27 @@ const UserWidget = ({ userId, picturePath }) => {
                 gap="0.5rem"
                 pb="1.1rem"
             >
-                <FlexBetween gap="1rem" onClick={() => navigate(`/profile/${userId}`)}>
-                    <UserImage image={picturePath} />
-                    <Box>
+                <FlexBetween gap="1rem" >
+                    <Box position="relative">
+                    <IconButton sx={{
+                            position: "absolute",
+                            top: "35px",
+                            left: "34px",
+                            background: palette.neutral.light,
+                            width: "28px",
+                            height: "28px"
+                        }}
+                        onClick={()=>setProfileImage(true)}
+                        >
+
+                            <EditIcon/>
+                        </IconButton>
+                        <UserImage image={picturePath} />  
+                    </Box>
+
+                    { profileImage && <EditImage profileImage={profileImage} setProfileImage={setProfileImage}/>}
+
+                    <Box onClick={() => navigate(`/profile/${userId}`)}>
                         <Typography
                             variant="h4"
                             color={dark}

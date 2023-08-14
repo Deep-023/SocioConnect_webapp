@@ -5,8 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Typography } from '@mui/material';
-import { fontSize, styled } from '@mui/system';
+import { styled } from '@mui/system';
 
 const BlurredBackground = styled(Dialog)`
   backdrop-filter: blur(2px);
