@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { styled } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-import { setUpdatedUser } from 'state';
+import { setUpdatedUser, setPosts } from 'state';
 
 const BlurredBackground = styled(Dialog)`
   backdrop-filter: blur(2px);
@@ -37,7 +37,8 @@ const EditImage = ({ profileImage, setProfileImage }) => {
             body: formData
         });
         const data = await response.json();
-        dispatch(setUpdatedUser({user:data}));
+        dispatch(setUpdatedUser({user:data.updatedUser}));
+        dispatch(setPosts({posts:data.updatedPosts}));
         setProfileImage(false);
     }
 

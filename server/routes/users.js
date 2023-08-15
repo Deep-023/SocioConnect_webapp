@@ -14,6 +14,7 @@ import config from "../config/firebase.config.js"
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import User from "../models/User.js";
+import Post from "../models/Post.js";
 import { deleteFromFirebase } from "../controllers/posts.js";
 initializeApp(config.firebaseConfig);
 
@@ -59,8 +60,10 @@ router.patch("/updateProfilePicture/:id", verifyToken, upload.single("picture"),
         const snapshot = await uploadBytesResumable(storageRef, convertedBuffer, metadata);
         const downloadURL = await getDownloadURL(snapshot.ref);
         deleteFromFirebase(user.picturePath);
+        const updatePost = await Post.updateMany( { userId: id }, {$set: { userPicturePath: downloadURL } });
+        const updatedPosts = await Post.find();
         const updatedUser = await User.findByIdAndUpdate(id, { picturePath: downloadURL }, { new: true });
-        res.status(200).json(updatedUser);
+        res.status(200).json({updatedUser,updatedPosts});
 
     } catch (err) {
         console.log(err.message);
